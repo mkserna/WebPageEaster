@@ -83,19 +83,4 @@ h1 {
   width: 400px;
 }
 
-#start-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 1.2em;
-  color: #ffffff;
-  background-color: #007bff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-#start-button:hover {
-  background-color: #0056b3;
-}
 

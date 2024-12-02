@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const scoreElement = document.getElementById('score');
     const highScoreElement = document.getElementById('high-score');
     const timerElement = document.getElementById('timer');
-    const startButton = document.getElementById('start-button');
     const emojis = ['🥚', '🐰', '🌷', '🌼', '🐣', '🥕', '🍫', '🐤'];
     let cards = [...emojis, ...emojis];
     let firstCard = null;
@@ -107,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
         scoreElement.innerText = score;
         timeLeft = 60;
         timerElement.innerText = timeLeft;
-        startButton.style.display = 'block';
+        initGame();
     }
 
     function initGame() {
@@ -119,10 +118,5 @@ document.addEventListener("DOMContentLoaded", () => {
         startTimer();
     }
 
-    startButton.addEventListener('click', () => {
-        startButton.style.display = 'none';
-        initGame();
-    });
-
-    resetGame(); // Inicializar el tablero limpio al cargar la página
+    initGame();
 });

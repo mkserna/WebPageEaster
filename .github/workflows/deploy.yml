@@ -1,0 +1,58 @@
+name: deploy application vite with github pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"               
+  cancel-in-progress: false   
+
+
+# Definición de los trabajos del workflow
+jobs:
+  build-and-deploy:
+    # Especifica que este trabajo usa el entorno de despliegue "github-pages"
+    environment:
+      name: github-pages       # Nombre del entorno
+      url: ${{ steps.deployment.outputs.page_url }} # URL del sitio desplegado
+
+    # Define el sistema operativo del runner (máquina virtual)
+    runs-on: ubuntu-latest      # Usa la última versión de Ubuntu
+
+    # Lista de pasos a ejecutar
+    steps:
+      # Paso 1: Clonar el repositorio en el runner
+      - name: Checkout repository
+        uses: actions/checkout@v4  # Acción para clonar el repositorio
+
+      # Paso 2: Configurar Node.js en el runner
+      - name: Setup Node.js
+        uses: actions/setup-node@v3  # Acción para configurar Node.js
+        with:
+          node-version: 22          # Versión de Node.js a instalar
+
+      # Paso 3: Instalar las dependencias del proyecto
+      - name: Install dependencies
+        run: npm install            # Comando para instalar las dependencias
+
+      # Paso 4: Construir el proyecto con Vite
+      - name: Build project
+        run: npm run build          # Comando para generar los archivos estáticos
+
+      # Paso 5: Subir los archivos generados como un artefacto
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3  # Acción para subir el artefacto
+        with:
+          path: dist                # Carpeta que contiene los archivos estáticos
+
+      # Paso 6: Desplegar en GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment              # ID del paso para referenciar su salida
+        uses: actions/deploy-pages@v4  # Acción para desplegar en GitHub Pages

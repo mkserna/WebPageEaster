@@ -1,30 +1,18 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encuentra los Huevos de Pascua</title>
+    <title>🐰 Juego de Memoria de Pascua</title>
     <link rel="stylesheet" href="/src/css/style.css">
 </head>
 <body>
-    <div class="game-container">
-        <h1>🐰 Encuentra los Huevos de Pascua 🐰</h1>
-        <div class="score-board">
-            <div>
-                <span>Puntuación Actual: </span><span id="score">0</span>
-            </div>
-            <div>
-                <span>Puntuación Máxima: </span><span id="highscore">0</span>
-            </div>
-        </div>
-        <div id="game-area" class="game-area"></div>
-        <div class="button-group">
-            <button id="start-button">Comenzar Juego</button>
-            <button id="pause-button" disabled>Pausar Juego</button>
-            <button id="end-button" disabled>Terminar Juego</button>
-        </div>
+    <h1>🐰 Juego de Memoria de Pascua 🐰</h1>
+    <div id="score-board">
+        <p>Puntaje: <span id="score">0</span></p>
+        <p>Puntaje Máximo: <span id="high-score">0</span></p>
     </div>
-
-    <script type="module" src="/src/js/main.js"></script>
+    <div id="game-board"></div>
+    <script src="/src/js/main.js"></script>
 </body>
 </html>

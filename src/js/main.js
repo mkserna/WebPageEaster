@@ -1,75 +1,103 @@
-let score = 0;
-let highScore = 0;
-let gameInterval;
-let isGamePaused = false;
+document.addEventListener("DOMContentLoaded", () => {
+    const gameBoard = document.getElementById('game-board');
+    const scoreElement = document.getElementById('score');
+    const highScoreElement = document.getElementById('high-score');
+    const emojis = ['🥚', '🐰', '🌷', '🌼', '🐣', '🥕', '🍫', '🐤'];
+    let cards = [...emojis, ...emojis];
+    let firstCard = null;
+    let secondCard = null;
+    let lockBoard = false;
+    let score = 0;
+    let highScore = localStorage.getItem('highScore') || 0;
 
-const scoreElement = document.getElementById('score');
-const highScoreElement = document.getElementById('highscore');
-const gameArea = document.getElementById('game-area');
-const startButton = document.getElementById('start-button');
-const pauseButton = document.getElementById('pause-button');
-const endButton = document.getElementById('end-button');
+    highScoreElement.innerText = highScore;
 
-startButton.addEventListener('click', startGame);
-pauseButton.addEventListener('click', pauseGame);
-endButton.addEventListener('click', endGame);
-
-function startGame() {
-    score = 0;
-    scoreElement.innerText = score;
-    isGamePaused = false;
-    startButton.disabled = true;
-    pauseButton.disabled = false;
-    endButton.disabled = false;
-    pauseButton.innerText = 'Pausar Juego';
-    clearInterval(gameInterval);
-
-    gameInterval = setInterval(() => {
-        if (!isGamePaused) {
-            createEgg();
-        }
-    }, 1500);
-}
-
-function pauseGame() {
-    isGamePaused = !isGamePaused;
-    if (isGamePaused) {
-        pauseButton.innerText = 'Reanudar Juego';
-    } else {
-        pauseButton.innerText = 'Pausar Juego';
+    function shuffle(array) {
+        array.sort(() => Math.random() - 0.5);
     }
-}
 
-function endGame() {
-    clearInterval(gameInterval);
-    if (score > highScore) {
-        highScore = score;
-        highScoreElement.innerText = highScore;
+    function createCard(emoji) {
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        const front = document.createElement('div');
+        front.className = 'front';
+        front.innerText = emoji;
+        
+        const back = document.createElement('div');
+        back.className = 'back';
+        back.innerText = '❓';
+        
+        card.appendChild(front);
+        card.appendChild(back);
+        
+        card.addEventListener('click', () => {
+            if (lockBoard || card === firstCard) return;
+            card.classList.add('flip');
+            
+            if (!firstCard) {
+                firstCard = card;
+            } else {
+                secondCard = card;
+                lockBoard = true;
+                
+                if (firstCard.querySelector('.front').innerText === secondCard.querySelector('.front').innerText) {
+                    firstCard.classList.add('matched');
+                    secondCard.classList.add('matched');
+                    updateScore();
+                    resetBoard();
+                    checkWin();
+                } else {
+                    setTimeout(() => {
+                        firstCard.classList.remove('flip');
+                        secondCard.classList.remove('flip');
+                        resetBoard();
+                    }, 1000);
+                }
+            }
+        });
+
+        return card;
     }
-    startButton.disabled = false;
-    pauseButton.disabled = true;
-    endButton.disabled = true;
-    pauseButton.innerText = 'Pausar Juego'; // Asegúrate de que el texto se restablezca
-    gameArea.innerHTML = ''; // Limpiar los huevos restantes
-}
 
-function createEgg() {
-    const egg = document.createElement('div');
-    egg.classList.add('egg');
-    egg.style.top = `${Math.random() * (gameArea.clientHeight - 50)}px`;
-    egg.style.left = `${Math.random() * (gameArea.clientWidth - 40)}px`;
+    function resetBoard() {
+        [firstCard, secondCard, lockBoard] = [null, null, false];
+    }
 
-    egg.addEventListener('click', () => {
+    function updateScore() {
         score++;
         scoreElement.innerText = score;
-        egg.remove();
-    });
-
-    gameArea.appendChild(egg);
-
-    setTimeout(() => {
-        if (egg.parentElement) {
-            egg.remove();
+        if (score > highScore) {
+            highScore = score;
+            highScoreElement.innerText = highScore;
+            localStorage.setItem('highScore', highScore);
         }
-    }, 1000);
-}
+    }
+
+    function checkWin() {
+        const matchedCards = document.querySelectorAll('.card.matched');
+        if (matchedCards.length === cards.length) {
+            setTimeout(() => {
+                alert('¡Felicidades! ¡Has ganado!');
+                resetGame();
+            }, 500);
+        }
+    }
+
+    function resetGame() {
+        gameBoard.innerHTML = '';
+        score = 0;
+        scoreElement.innerText = score;
+        initGame();
+    }
+
+    function initGame() {
+        shuffle(cards);
+        cards.forEach(emoji => {
+            const card = createCard(emoji);
+            gameBoard.appendChild(card);
+        });
+    }
+
+    initGame();
+});

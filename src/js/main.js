@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const gameBoard = document.getElementById('game-board');
     const scoreElement = document.getElementById('score');
     const highScoreElement = document.getElementById('high-score');
+    const timerElement = document.getElementById('timer');
+    const startButton = document.getElementById('start-button');
     const emojis = ['🥚', '🐰', '🌷', '🌼', '🐣', '🥕', '🍫', '🐤'];
     let cards = [...emojis, ...emojis];
     let firstCard = null;
@@ -9,6 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let lockBoard = false;
     let score = 0;
     let highScore = localStorage.getItem('highScore') || 0;
+    let timeLeft = 60;
+    let timer;
 
     highScoreElement.innerText = highScore;
 
@@ -77,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function checkWin() {
         const matchedCards = document.querySelectorAll('.card.matched');
         if (matchedCards.length === cards.length) {
+            clearInterval(timer);
             setTimeout(() => {
                 alert('¡Felicidades! ¡Has ganado!');
                 resetGame();
@@ -84,11 +89,25 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function startTimer() {
+        timer = setInterval(() => {
+            timeLeft--;
+            timerElement.innerText = timeLeft;
+            if (timeLeft === 0) {
+                clearInterval(timer);
+                alert('¡Se acabó el tiempo! Has perdido.');
+                resetGame();
+            }
+        }, 1000);
+    }
+
     function resetGame() {
         gameBoard.innerHTML = '';
         score = 0;
         scoreElement.innerText = score;
-        initGame();
+        timeLeft = 60;
+        timerElement.innerText = timeLeft;
+        startButton.style.display = 'block';
     }
 
     function initGame() {
@@ -97,7 +116,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const card = createCard(emoji);
             gameBoard.appendChild(card);
         });
+        startTimer();
     }
 
-    initGame();
+    startButton.addEventListener('click', () => {
+        startButton.style.display = 'none';
+        initGame();
+    });
+
+    resetGame(); // Inicializar el tablero limpio al cargar la página
 });

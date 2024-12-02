@@ -73,3 +73,29 @@ h1 {
 .card .back {
   background-color: #deb0bc;
 }
+
+#score-board {
+  margin-bottom: 20px;
+  font-size: 1.2em;
+  color: #6c757d;
+  display: flex;
+  justify-content: space-around;
+  width: 400px;
+}
+
+#start-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1.2em;
+  color: #ffffff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#start-button:hover {
+  background-color: #0056b3;
+}
+
